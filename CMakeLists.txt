@@ -1,6 +1,6 @@
-cmake_minimum_required(VERSION 2.8.10)
+cmake_minimum_required(VERSION 3.1)
 
-project(pthreads-win32)
+project(pthreads-win32 VERSION 1.0.0 LANGUAGES C)
 
 set(PTHREADS_SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/pthreads-win32)
 
