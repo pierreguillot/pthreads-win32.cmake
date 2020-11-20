@@ -14,6 +14,11 @@ source_group(PTHREAD_API FILES ${PTHREAD_API})
 set(PTHREAD_RESOURCES
 	${PTHREADS_SOURCE_DIR}/version.rc)
 
+set(PTHREAD_HEADERS
+	${PTHREADS_SOURCE_DIR}/config.h
+	${PTHREADS_SOURCE_DIR}/implement.h
+	${PTHREADS_SOURCE_DIR}/need_errno.h)
+
 set(PTHREAD_SOURCES
 	${PTHREADS_SOURCE_DIR}/autostatic.c
 	${PTHREADS_SOURCE_DIR}/cleanup.c
@@ -194,6 +199,6 @@ set(CMAKE_DEBUG_POSTFIX d)
 add_definitions(/DHAVE_PTW32_CONFIG_H)
 
 include_directories(${PTHREADS_SOURCE_DIR})
-add_library(pthreads STATIC ${PTHREAD_SOURCES}  ${PTHREAD_API} ${PTHREAD_RESOURCES})
+add_library(pthreads STATIC ${PTHREAD_SOURCES} ${PTHREAD_API} ${PTHREAD_RESOURCES} ${PTHREAD_HEADERS})
 target_include_directories(pthreads PUBLIC ${PTHREADS_SOURCE_DIR})
 set_target_properties(pthreads PROPERTIES PUBLIC_HEADER "${PTHREAD_API}")
