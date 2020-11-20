@@ -23,7 +23,6 @@ set(PTHREAD_SOURCES
 	${PTHREADS_SOURCE_DIR}/autostatic.c
 	${PTHREADS_SOURCE_DIR}/cleanup.c
 	${PTHREADS_SOURCE_DIR}/create.c
-	${PTHREADS_SOURCE_DIR}/dll.c
 	${PTHREADS_SOURCE_DIR}/errno.c
 	${PTHREADS_SOURCE_DIR}/global.c
 	${PTHREADS_SOURCE_DIR}/pthread.c
@@ -200,5 +199,5 @@ add_definitions(/DHAVE_PTW32_CONFIG_H)
 
 include_directories(${PTHREADS_SOURCE_DIR})
 add_library(pthreads STATIC ${PTHREAD_SOURCES} ${PTHREAD_API} ${PTHREAD_RESOURCES} ${PTHREAD_HEADERS})
-target_include_directories(pthreads PUBLIC ${PTHREADS_SOURCE_DIR})
+target_include_directories(pthreads PUBLIC $<BUILD_INTERFACE:${PTHREADS_SOURCE_DIR}>)
 set_target_properties(pthreads PROPERTIES PUBLIC_HEADER "${PTHREAD_API}")
