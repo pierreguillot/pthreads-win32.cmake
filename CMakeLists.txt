@@ -25,7 +25,6 @@ set(PTHREAD_SOURCES
 	${PTHREADS_SOURCE_DIR}/create.c
 	${PTHREADS_SOURCE_DIR}/errno.c
 	${PTHREADS_SOURCE_DIR}/global.c
-	${PTHREADS_SOURCE_DIR}/pthread.c
 	${PTHREADS_SOURCE_DIR}/pthread_attr_destroy.c
 	${PTHREADS_SOURCE_DIR}/pthread_attr_getdetachstate.c
 	${PTHREADS_SOURCE_DIR}/pthread_attr_getinheritsched.c
@@ -160,23 +159,7 @@ set(PTHREAD_SOURCES
 	${PTHREADS_SOURCE_DIR}/sem_unlink.c
 	${PTHREADS_SOURCE_DIR}/sem_wait.c
 	${PTHREADS_SOURCE_DIR}/signal.c
-	${PTHREADS_SOURCE_DIR}/w32_CancelableWait.c
-	)
-
-if( CMAKE_SIZEOF_VOID_P EQUAL 8 )
-	add_definitions( -DPTW32_ARCH="x64" )
-else( CMAKE_SIZEOF_VOID_P EQUAL 8 )
-	add_definitions( -DPTW32_ARCH="x86" )
-endif( CMAKE_SIZEOF_VOID_P EQUAL 8 )
-
-if(MSVC)
-	add_definitions(/DPTW32_RC_MSC)
-	set(PTHREADS_COMPILER V)
-elseif(CMAKE_COMPILER_IS_GNUCXX)
-	set(PTHREADS_COMPILER G)
-else()
-	message("WARNING: pthreads-win32 doesn't recognize your compiler!")
-endif()
+	${PTHREADS_SOURCE_DIR}/w32_CancelableWait.c)
 
 if(PTHREADS_BUILD_CPP)
 	set(PTHREADS_EXCEPTION_SCHEME CE)
@@ -193,11 +176,18 @@ else()
 endif()
 
 set(PTHREADS_COMPATIBILITY_VERSION 2)
-set(CMAKE_DEBUG_POSTFIX d)
-
-add_definitions(/DHAVE_PTW32_CONFIG_H)
 
 include_directories(${PTHREADS_SOURCE_DIR})
-add_library(pthreads STATIC ${PTHREAD_SOURCES} ${PTHREAD_API} ${PTHREAD_RESOURCES} ${PTHREAD_HEADERS})
+add_library(pthreads STATIC ${PTHREAD_SOURCES} ${PTHREAD_RESOURCES})
 target_include_directories(pthreads PUBLIC $<BUILD_INTERFACE:${PTHREADS_SOURCE_DIR}>)
-set_target_properties(pthreads PROPERTIES PUBLIC_HEADER "${PTHREAD_API}")
+
+target_compile_definitions(pthreads PRIVATE HAVE_CONFIG_H HAVE_PTW32_CONFIG_H PTW32_STATIC_LIB)
+if(MSVC)
+	target_compile_definitions(pthreads PRIVATE PTW32_RC_MSC)
+endif()
+
+if(CMAKE_SIZEOF_VOID_P EQUAL 8)
+	target_compile_definitions(pthreads PRIVATE PTW32_ARCHx64)
+else()
+	target_compile_definitions(pthreads PRIVATE PTW32_ARCHx86)
+endif()
